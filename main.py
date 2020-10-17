@@ -1,0 +1,35 @@
+!pip install Scikit-fuzzy
+import numpy as np
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+windspeed = ctrl.Antecedent(np.arange(0,80,1),'windspeed')
+speedincrease = ctrl.Antecedent(np.arange(80,160,1),'speedincrease')
+energy = ctrl.Consequent(np.arange(0,300,1),'energy')
+windspeed.automf(5)
+speedincrease.automf(5)
+energy.automf(5)
+windspeed.view()
+energy.view()
+speedincrease.view()
+rule1 = ctrl.Rule(windspeed['poor']| speedincrease['poor'], energy['poor'])
+rule2 = ctrl.Rule(windspeed['mediocre']| speedincrease['poor'], energy['mediocre'])
+rule3 = ctrl.Rule(windspeed['average']| speedincrease['mediocre'], energy['average'])
+rule4 = ctrl.Rule(windspeed['decent']| speedincrease['average'], energy['decent'])
+rule5 = ctrl.Rule(windspeed['good']| speedincrease['decent'], energy['good'])
+rule6 = ctrl.Rule(windspeed['good']| speedincrease['good'], energy['good'])
+rule7 = ctrl.Rule(windspeed['poor']| speedincrease['mediocre'], energy['mediocre'])
+rule8 = ctrl.Rule(windspeed['mediocre']| speedincrease['mediocre'], energy['mediocre'])
+rule9 = ctrl.Rule(windspeed['mediocre']| speedincrease['average'], energy['average'])
+rule10 = ctrl.Rule(windspeed['average']| speedincrease['average'], energy['average'])
+rule11 = ctrl.Rule(windspeed['average']| speedincrease['decent'], energy['decent'])
+rule12  = ctrl.Rule(windspeed['decent']| speedincrease['good'], energy['good'])
+rule13 = ctrl.Rule(windspeed['decent']| speedincrease['decent'], energy['decent'])
+energyreleased=ctrl.ControlSystemSimulation(energy_ctrl)
+energyreleased=ctrl.ControlSystemSimulation(energy_ctrl)
+energy_ctrl=ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6,rule7,rule8,rule9,rule10,rule11,rule12,rule13])
+energyreleased=ctrl.ControlSystemSimulation(energy_ctrl)
+energyreleased.input['windspeed']=40
+energyreleased.input['speedincrease']=90
+energyreleased.compute()
+print(energyreleased.output['energy'])
+energy.view(sim=energyreleased)
